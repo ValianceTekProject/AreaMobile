@@ -9,7 +9,7 @@
 import axios from "axios";
 import { NewAppScreen } from '@react-native/new-app-screen';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import { Card, TextInput, Text, Button } from 'react-native-paper';
+import { Card, TextInput, Text, Button, IconButton, MD3Colors } from 'react-native-paper';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -38,34 +38,39 @@ function AppContent() {
     setItems((await res).data);
   }
 
-  const onOkButton = async () => {
+  const onOkButton = async (title) => {
     await axios.post(`${baseUrl}/todos/add`, {
-      "Item": "Test",
+      "Item": title,
       "Completed": false
     });
+    loadItems();
   };
 
-  // const [checked, setChecked] = useState(false);
+  const onDeleteButton = async (item) => {
+    await axios.delete(`${baseUrl}/todos/del`, {
+      data: { "Item": item }
+    });
+    loadItems();
+  };
 
   const check = async (item, completed) => {
     await axios.patch(`${baseUrl}/todos/mod`, {
       "Item": item,
       "Completed": !completed
     });
-    // setChecked(!checked);
-  }
+    loadItems();
+  };
 
   const [text, setText] = useState("");
 
   useEffect(() => {
     loadItems();
-  }, [items]);
+  }, []);
 
   return (
     <View style={styles.container}>
       <Card>
         <Card.Content>
-          fddfddf
           <TextInput
             label="Title"
             value={text}
@@ -73,7 +78,7 @@ function AppContent() {
           />
         </Card.Content>
         <Card.Actions>
-          <Button onPress={onOkButton}>Add Task</Button>
+          <Button onPress={() => onOkButton(text)}>Add Task</Button>
         </Card.Actions>
       </Card>
       {items.map((item) => (
@@ -82,6 +87,12 @@ function AppContent() {
             <Text variant="titleLarge">{item.Item}</Text>
           </Card.Content>
           <Card.Actions>
+            <IconButton
+              icon="camera"
+              iconColor={MD3Colors.error50}
+              size={20}
+              onPress={() => onDeleteButton(item.Item)}
+            />
             <Button onPress={() => check(item.Item, item.Completed)}>{item.Completed ? "Done" : "Not Done Yet"}</Button>
           </Card.Actions>
         </Card>
