@@ -4,15 +4,17 @@
  *
  * @format
  */
+'use client'
 
 import axios from "axios";
 import { NewAppScreen } from '@react-native/new-app-screen';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import { Card, Text, Button } from 'react-native-paper';
+import { Card, TextInput, Text, Button } from 'react-native-paper';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { useEffect, useState } from "react";
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -29,6 +31,12 @@ function App() {
 const baseUrl = "http://10.0.2.2:8080";
 
 function AppContent() {
+  const [items, setItems] = useState([]);
+
+  const loadItems = async () => {
+    const res = axios.get(`${baseUrl}/todos`);
+    setItems((await res).data);
+  }
 
   const onOkButton = async () => {
     await axios.post(`${baseUrl}/todos/add`, {
@@ -37,30 +45,47 @@ function AppContent() {
     });
   };
 
+  // const [checked, setChecked] = useState(false);
+
+  const check = async (item, completed) => {
+    await axios.patch(`${baseUrl}/todos/mod`, {
+      "Item": item,
+      "Completed": !completed
+    });
+    // setChecked(!checked);
+  }
+
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    loadItems();
+  }, [items]);
+
   return (
     <View style={styles.container}>
       <Card>
-        <Card.Title title="Card Title" subtitle="Card Subtitle" />
         <Card.Content>
-          <Text variant="titleLarge">Card title</Text>
-          <Text variant="bodyMedium">Card content</Text>
+          fddfddf
+          <TextInput
+            label="Title"
+            value={text}
+            onChangeText={text => setText(text)}
+          />
         </Card.Content>
         <Card.Actions>
-          <Button>Cancel</Button>
-          <Button onPress={onOkButton}>Ok</Button>
+          <Button onPress={onOkButton}>Add Task</Button>
         </Card.Actions>
       </Card>
-      <Card>
-        <Card.Title title="Card Title" subtitle="Card Subtitle" />
-        <Card.Content>
-          <Text variant="titleLarge">Card title</Text>
-          <Text variant="bodyMedium">Card content</Text>
-        </Card.Content>
-        <Card.Actions>
-          <Button>Cancel</Button>
-          <Button onPress={onOkButton}>Ok</Button>
-        </Card.Actions>
-      </Card>
+      {items.map((item) => (
+        <Card>
+          <Card.Content>
+            <Text variant="titleLarge">{item.Item}</Text>
+          </Card.Content>
+          <Card.Actions>
+            <Button onPress={() => check(item.Item, item.Completed)}>{item.Completed ? "Done" : "Not Done Yet"}</Button>
+          </Card.Actions>
+        </Card>
+      ))};
     </View>
   );
 }
