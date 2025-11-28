@@ -6,6 +6,7 @@
  */
 'use client'
 
+import LoginPage from "./src/features/authentication/LoginPage";
 import axios from "axios";
 import { NewAppScreen } from '@react-native/new-app-screen';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
@@ -15,6 +16,8 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { useEffect, useState } from "react";
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from './src/navigation/AppNavigator';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -69,7 +72,8 @@ function AppContent() {
 
   return (
     <View style={styles.container}>
-      <Card>
+      <LoginPage/>
+      {/* <Card>
         <Card.Content>
           <TextInput
             label="Title"
@@ -96,7 +100,7 @@ function AppContent() {
             <Button onPress={() => check(item.Item, item.Completed)}>{item.Completed ? "Done" : "Not Done Yet"}</Button>
           </Card.Actions>
         </Card>
-      ))};
+      ))}; */}
     </View>
   );
 }
