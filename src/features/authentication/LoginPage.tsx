@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Card, TextInput, Text, Button, IconButton, MD3Colors } from 'react-native-paper';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import { Color } from "react-native/types_generated/Libraries/Animated/AnimatedExports";
+import React, { useState } from "react";
+import { Card, TextInput, Button } from 'react-native-paper';
+import { StyleSheet, View, Linking } from 'react-native';
 
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const baseUrl = "http://10.0.2.2:8080";
+
+  const onGithubButton = async () => {
+    Linking.openURL(`${baseUrl}/auth/github/login`);
+  };
 
   return (
     <View style={styles.container}>
@@ -41,6 +46,7 @@ export default function LoginPage() {
               onChangeText={text => setPassword(text)}
           />
         <Button mode="contained">Log In</Button>
+        <Button mode="contained" onPress={onGithubButton}>Github</Button>
         </Card.Content>
       </Card>
     </View>
