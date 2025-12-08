@@ -1,32 +1,21 @@
-import React, { use, useState } from "react";
-import { Card, TextInput, Button } from 'react-native-paper';
-import { StyleSheet, View, Linking } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { Card, TextInput, Text, Button, IconButton, MD3Colors } from 'react-native-paper';
+import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import axios from "axios";
+// import { Color } from "react-native/types_generated/Libraries/Animated/AnimatedExports";
 
-type LoginArgs = {
-  user: any | null;
-  onLogin: (user: any) => void;
-};
 
-const statusOK = 200;
-
-export default function LoginPage({ user ,onLogin } : LoginArgs) {
+export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const baseUrl = "http://10.0.2.2:8080";
 
-  const onLoginButton = async () => {
-    const response = await axios.post(`${baseUrl}/auth/login`, {
+  const onRegisterButton = async () => {
+    await axios.post(`${baseUrl}/auth/register`, {
         "email": email,
         "password": password
     });
-    if (response.status == statusOK)
-      onLogin("connected");
-  };
-
-  const onGithubButton = async () => {
-    Linking.openURL(`${baseUrl}/auth/github/login`);
   };
 
   return (
@@ -61,8 +50,7 @@ export default function LoginPage({ user ,onLogin } : LoginArgs) {
               right={<TextInput.Icon icon="eye" />}
               onChangeText={text => setPassword(text)}
           />
-        <Button mode="contained" onPress={onLoginButton}>Log In</Button>
-        <Button mode="contained" onPress={onGithubButton}>Github</Button>
+        <Button mode="contained" onPress={onRegisterButton}>Register</Button>
         </Card.Content>
       </Card>
     </View>

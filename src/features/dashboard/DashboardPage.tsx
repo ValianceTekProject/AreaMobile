@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Card, TextInput, Text, Button, IconButton, MD3Colors } from 'react-native-paper';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import axios from "axios";
 
-export default function DashboardPage() {
+type DashboardArgs = {
+  navigation: NativeStackNavigationProp<any>;
+  user: any | null;
+  onLogin: (user: any) => void;
+};
+
+export default function DashboardPage({ navigation, user, onLogin } : DashboardArgs) {
   const baseUrl = "http://10.0.2.2:8080";
   const theme = useColorScheme();
 
@@ -36,6 +43,8 @@ export default function DashboardPage() {
           </Card.Actions>
         </Card>
       ))}
+        <Button onPress={() => navigation.navigate("Settings")}>Settings</Button>
+        <Button onPress={() => onLogin(null)}>Disconnect</Button>
     </View>
   );
 }

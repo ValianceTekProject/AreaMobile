@@ -17,7 +17,7 @@ import {
 import { useEffect, useState } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './src/navigation/AppNavigator';
-import DashboardPage from "./src/features/dashboard/DashboardPage";
+// import DashboardPage from "./src/features/dashboard/DashboardPage";
 import { lightTheme, darkTheme } from "./src/themes/theme.tsx";
 import RegisterPage from "./src/features/authentication/RegisterPage.tsx";
 
