@@ -19,21 +19,26 @@ import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './src/navigation/AppNavigator';
 import DashboardPage from "./src/features/dashboard/DashboardPage";
 import { lightTheme, darkTheme } from "./src/themes/theme.tsx";
+import RegisterPage from "./src/features/authentication/RegisterPage.tsx";
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
   const [isDarkTheme, setIsDarkTheme] = useState(isDarkMode);
+  const [user, setUser] = useState(null);
 
   return (
     <SafeAreaProvider>
       <PaperProvider theme={ isDarkTheme ? lightTheme : darkTheme }>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <Appbar.Header>
-        <Appbar.BackAction onPress={() => {}} />
+        {/* <Appbar.BackAction onPress={() => {}} /> */}
         <Appbar.Content title="AREA" />
         <Appbar.Action icon={ isDarkTheme ? "weather-sunny" : "weather-night"} onPress={() => setIsDarkTheme(!isDarkTheme)} />
       </Appbar.Header>
-      <AppContent />
+      <NavigationContainer>
+        <AppNavigator user={user} onLogin={setUser} />
+      </NavigationContainer>
+      {/* <AppContent /> */}
       </PaperProvider>
     </SafeAreaProvider>
   );
@@ -46,7 +51,7 @@ function AppContent() {
 
   return (
     <View style={styles.container}>
-      <DashboardPage/>
+      <RegisterPage/>
     </View>
   );
 }
