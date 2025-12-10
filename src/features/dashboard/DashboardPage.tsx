@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Card, TextInput, Text, Button, IconButton, MD3Colors } from 'react-native-paper';
+import { Card, TextInput, Text, Button, IconButton, MD3Colors, Switch } from 'react-native-paper';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import axios from "axios";
 
@@ -15,19 +15,36 @@ export default function DashboardPage({ navigation, user, onLogin } : DashboardA
   const theme = useColorScheme();
 
     type Todo = {
-        action: string;
-        reaction: string;
+        id: string;
+        name: string;
+        is_enabled: boolean;
         };
 
     const [items, setItems] = useState<Todo[]>([]);
 
-  useEffect(() => {
-    setItems([{ "action": "blablabla",
-                    "reaction": "test"
-                },
-                { "action": "blablabla",
-                    "reaction": "test"
-                }]);
+  const loadItems = async () => {
+    const res = await axios.get(`${baseUrl}/areas`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+    });
+    setItems((await res).data);
+  };
+
+
+  const onToggleSwitch = async (id: string, status: boolean) => {
+    await axios.patch(`${baseUrl}/areas/${id}/status`, { "is_enabled": !status }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+    });
+    loadItems();
+  };
+
+    useEffect(() => {
+        loadItems();
     }, []);
 
   return (
@@ -35,8 +52,8 @@ export default function DashboardPage({ navigation, user, onLogin } : DashboardA
       {items.map((item, index) => (
         <Card key={index} style={styles.card}>
           <Card.Content>
-            <Text variant="titleLarge">Action: {item.action}</Text>
-            <Text variant="titleLarge">Reaction: {item.reaction}</Text>
+            <Switch value={item.is_enabled} onValueChange={() => onToggleSwitch(item.id, item.is_enabled)} />
+            <Text variant="titleLarge">AREA Name: {item.name}</Text>
           </Card.Content>
           <Card.Actions>
             <Button>Apply</Button>
