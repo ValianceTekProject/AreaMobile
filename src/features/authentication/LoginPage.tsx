@@ -1,16 +1,18 @@
 import React, { use, useState } from "react";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Card, TextInput, Button } from 'react-native-paper';
 import { StyleSheet, View, Linking } from 'react-native';
 import axios from "axios";
 
 type LoginArgs = {
+    navigation: NativeStackNavigationProp<any>;
   user: any | null;
   onLogin: (user: any) => void;
 };
 
 const statusOK = 200;
 
-export default function LoginPage({ user ,onLogin } : LoginArgs) {
+export default function LoginPage({ navigation, user, onLogin } : LoginArgs) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -22,7 +24,11 @@ export default function LoginPage({ user ,onLogin } : LoginArgs) {
         "password": password
     });
     if (response.status == statusOK)
-      onLogin("connected");
+      onLogin(response.data.token);
+  };
+
+  const onCreateButton = async () => {
+    navigation.navigate("Register");
   };
 
   const onGithubButton = async () => {
@@ -62,6 +68,7 @@ export default function LoginPage({ user ,onLogin } : LoginArgs) {
               onChangeText={text => setPassword(text)}
           />
         <Button mode="contained" onPress={onLoginButton}>Log In</Button>
+        <Button mode="contained" onPress={onCreateButton}>Create an account</Button>
         <Button mode="contained" onPress={onGithubButton}>Github</Button>
         </Card.Content>
       </Card>

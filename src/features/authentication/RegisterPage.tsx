@@ -5,17 +5,19 @@ import axios from "axios";
 // import { Color } from "react-native/types_generated/Libraries/Animated/AnimatedExports";
 
 
-export default function RegisterPage() {
+export default function RegisterPage(args: any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const baseUrl = "http://10.0.2.2:8080";
 
   const onRegisterButton = async () => {
-    await axios.post(`${baseUrl}/auth/register`, {
+    const response = await axios.post(`${baseUrl}/auth/register`, {
         "email": email,
         "password": password
     });
+    if (response.status == 200) 
+      args.navigation.replace("Login");
   };
 
   return (
