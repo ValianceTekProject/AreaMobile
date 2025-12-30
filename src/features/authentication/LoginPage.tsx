@@ -2,6 +2,7 @@ import React, { use, useState } from "react";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Card, TextInput, Button } from 'react-native-paper';
 import { StyleSheet, View, Linking } from 'react-native';
+import { setToken } from "../storage/Token.tsx";
 import axios from "axios";
 
 type LoginArgs = {
@@ -23,8 +24,10 @@ export default function LoginPage({ navigation, user, onLogin } : LoginArgs) {
         "email": email,
         "password": password
     });
-    if (response.status == statusOK)
-      onLogin(response.data.token);
+    if (response.status == statusOK) {
+      onLogin("connected");
+      setToken(response.data.token);
+    }
   };
 
   const onCreateButton = async () => {
