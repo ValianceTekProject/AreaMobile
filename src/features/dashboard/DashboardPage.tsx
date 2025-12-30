@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Card, TextInput, Text, Button, IconButton, MD3Colors, Switch } from 'react-native-paper';
 import { StyleSheet, View, useColorScheme } from 'react-native';
+import { getToken } from "../storage/Token.tsx";
 import axios from "axios";
 
 type DashboardArgs = {
@@ -17,24 +18,26 @@ export default function DashboardPage({ navigation, user, onLogin } : DashboardA
     type Todo = {
         id: string;
         name: string;
-        is_enabled: boolean;
+        isEnabled: boolean;
         };
 
     const [items, setItems] = useState<Todo[]>([]);
 
   const loadItems = async () => {
+    const token = await getToken();
+
     const res = await axios.get(`${baseUrl}/areas`, {
         headers: {
           "Content-Type": "application/json",
-        },
-        withCredentials: true,
+          "Authorization": "Bearer " + token
+        }
     });
     setItems((await res).data);
   };
 
 
   const onToggleSwitch = async (id: string, status: boolean) => {
-    await axios.patch(`${baseUrl}/areas/${id}/status`, { "is_enabled": !status }, {
+    await axios.patch(`${baseUrl}/areas/${id}/status`, { is_enabled: !status }, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -49,15 +52,20 @@ export default function DashboardPage({ navigation, user, onLogin } : DashboardA
 
   return (
     <View style={styles.container}>
+      <IconButton
+            icon="plus"
+            size={20}
+            onPress={() => console.log('Pressed')}
+        />
       {items.map((item, index) => (
         <Card key={index} style={styles.card}>
           <Card.Content>
-            <Switch value={item.is_enabled} onValueChange={() => onToggleSwitch(item.id, item.is_enabled)} />
+            <Switch value={item.isEnabled} onValueChange={() => onToggleSwitch(item.id, item.isEnabled)} />
             <Text variant="titleLarge">AREA Name: {item.name}</Text>
           </Card.Content>
           <Card.Actions>
             <Button>Apply</Button>
-          </Card.Actions>
+          </Card.Actions> 
         </Card>
       ))}
         <Button onPress={() => navigation.navigate("Settings")}>Settings</Button>
