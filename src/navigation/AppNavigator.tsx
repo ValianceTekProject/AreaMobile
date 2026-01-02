@@ -3,6 +3,8 @@ import RegisterPage from '../features/authentication/RegisterPage';
 import LoginPage from '../features/authentication/LoginPage';
 import DashboardPage from '../features/dashboard/DashboardPage';
 import SettingsPage from '../features/dashboard/SettingsPage';
+import CreateAREAPage from '../features/dashboard/CreateAREAPage';
+import AddAREAPage from '../features/dashboard/AddAREAPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +20,24 @@ export default function AppNavigator({ user, onLogin }: AppNavigatorArgs) {
         <>
           <Stack.Screen name="Dashboard">
             {args => <DashboardPage {...args} user={user} onLogin={onLogin} />}
+          </Stack.Screen>
+          <Stack.Screen
+            name="CreateArea"
+            options={{
+              presentation: 'transparentModal',
+              headerShown: false,
+              animation: 'fade',
+            }}>
+            {args => <CreateAREAPage {...args} user={user} onLogin={onLogin} />}
+          </Stack.Screen>
+          <Stack.Screen
+          name="AddArea"
+          component={AddAREAPage}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            animation: 'fade',
+          }}>
           </Stack.Screen>
           <Stack.Screen name="Settings" component={SettingsPage} />
         </>

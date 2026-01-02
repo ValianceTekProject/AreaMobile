@@ -20,6 +20,7 @@ import AppNavigator from './src/navigation/AppNavigator';
 // import DashboardPage from "./src/features/dashboard/DashboardPage";
 import { lightTheme, darkTheme } from "./src/themes/theme.tsx";
 import RegisterPage from "./src/features/authentication/RegisterPage.tsx";
+import { Header } from "./src/navigation/Header.tsx";
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -30,12 +31,8 @@ function App() {
     <SafeAreaProvider>
       <PaperProvider theme={ isDarkTheme ? lightTheme : darkTheme }>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Appbar.Header>
-        {/* <Appbar.BackAction onPress={() => {}} /> */}
-        <Appbar.Content title="AREA" />
-        <Appbar.Action icon={ isDarkTheme ? "weather-sunny" : "weather-night"} onPress={() => setIsDarkTheme(!isDarkTheme)} />
-      </Appbar.Header>
       <NavigationContainer>
+        <Header isDarkTheme={isDarkTheme} setIsDarkTheme={setIsDarkTheme}/>
         <AppNavigator user={user} onLogin={setUser} />
       </NavigationContainer>
       {/* <AppContent /> */}

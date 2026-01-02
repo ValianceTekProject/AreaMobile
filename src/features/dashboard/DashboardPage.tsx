@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Card, TextInput, Text, Button, IconButton, MD3Colors, Switch } from 'react-native-paper';
-import { StyleSheet, View, useColorScheme } from 'react-native';
+import { StyleSheet, View, useColorScheme, FlatList } from 'react-native';
 import { getToken } from "../storage/Token.tsx";
 import axios from "axios";
 
@@ -37,12 +37,12 @@ export default function DashboardPage({ navigation, user, onLogin } : DashboardA
 
 
   const onToggleSwitch = async (id: string, status: boolean) => {
-    await axios.patch(`${baseUrl}/areas/${id}/status`, { is_enabled: !status }, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-    });
+    // await axios.patch(`${baseUrl}/areas/${id}/status`, { is_enabled: !status }, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     withCredentials: true,
+    // });
     loadItems();
   };
 
@@ -55,19 +55,27 @@ export default function DashboardPage({ navigation, user, onLogin } : DashboardA
       <IconButton
             icon="plus"
             size={20}
-            onPress={() => console.log('Pressed')}
+            onPress={() => navigation.navigate("CreateArea")}
         />
-      {items.map((item, index) => (
-        <Card key={index} style={styles.card}>
-          <Card.Content>
-            <Switch value={item.isEnabled} onValueChange={() => onToggleSwitch(item.id, item.isEnabled)} />
-            <Text variant="titleLarge">AREA Name: {item.name}</Text>
-          </Card.Content>
-          <Card.Actions>
-            <Button>Apply</Button>
-          </Card.Actions> 
-        </Card>
-      ))}
+
+      <FlatList
+        data={items}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <Card style={styles.card}>
+            <Card.Content>
+              <Switch
+                value={item.isEnabled}
+                onValueChange={() => onToggleSwitch(item.id, item.isEnabled)}
+              />
+              <Text variant="titleLarge">AREA Name: {item.name}</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button>Apply</Button>
+            </Card.Actions>
+          </Card>
+        )}
+      />
         <Button onPress={() => navigation.navigate("Settings")}>Settings</Button>
         <Button onPress={() => onLogin(null)}>Disconnect</Button>
     </View>
@@ -80,9 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    width: "90%",
-    height: "20%",
-    margin: 10
+    margin: 5
   },
   inputs: {
     margin: 10
