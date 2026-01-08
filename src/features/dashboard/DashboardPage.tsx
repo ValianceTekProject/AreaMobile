@@ -37,12 +37,14 @@ export default function DashboardPage({ navigation, user, onLogin } : DashboardA
 
 
   const onToggleSwitch = async (id: string, status: boolean) => {
-    // await axios.patch(`${baseUrl}/areas/${id}/status`, { is_enabled: !status }, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     withCredentials: true,
-    // });
+    const token = await getToken();
+
+    await axios.patch(`${baseUrl}/areas/${id}/status`, { "is_enabled": !status }, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        }
+    });
     loadItems();
   };
 
