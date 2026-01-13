@@ -1,59 +1,109 @@
-import React from "react";
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Card, Text, Button, IconButton, Switch } from 'react-native-paper';
-import { StyleSheet, View, FlatList } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  RefreshControl,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Card, Text, Button, IconButton, Switch } from "react-native-paper";
+import { apiClient } from "@/utils/apiClient";
 
-type DashboardArgs = {
-  navigation: NativeStackNavigationProp<any>;
-  user: any | null;
-  onLogin: (user: any) => void;
+type Area = {
+  id: number;
+  name: string;
+  isEnabled: boolean;
 };
 
-export default function DashboardPage({ navigation, user, onLogin } : DashboardArgs) {
-  const items = [
-    { id: '1', name: 'Area 1', isEnabled: true },
-    { id: '2', name: 'Area 2', isEnabled: false },
-    { id: '3', name: 'Area 3', isEnabled: true },
-  ];
+type DashboardArgs = {
+  navigation: any;
+  user: any | null;
+  onLogin: (user: any | null) => void;
+};
+
+export default function DashboardPage({
+  navigation,
+  user,
+  onLogin,
+}: DashboardArgs) {
+  const [areas, setAreas] = useState<Area[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchAreas = async () => {
+    try {
+      setLoading(true);
+      const data = await apiClient.get("/areas");
+      setAreas(data);
+    } catch (e) {
+      console.error("Failed to fetch areas", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchAreas();
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchAreas();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <IconButton
-        icon="plus"
-        size={20}
-        onPress={() => navigation.navigate("CreateArea")}
-      />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <IconButton
+            icon="plus"
+            size={20}
+            onPress={() => navigation.navigate("CreateArea")}
+          />
+        </View>
 
-      <FlatList
-        data={items}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Card style={styles.card}>
-            <Card.Content>
-              <Switch value={item.isEnabled} />
-              <Text variant="titleLarge">AREA Name: {item.name}</Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button>Apply</Button>
-            </Card.Actions>
+        <FlatList
+          data={areas}
+          keyExtractor={(item) => item.id.toString()}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          renderItem={({ item }) => (
+            <Card style={styles.card}>
+              <Card.Content>
+                <Switch value={item.isEnabled} />
+                <Text variant="titleLarge">AREA Name: {item.name}</Text>
+              </Card.Content>
+              <Card.Actions>
+                <Button>Apply</Button>
+              </Card.Actions>
+            </Card>
+          )}
+        />
+
+        <Card.Actions>
+          <Card>
+            <Button onPress={() => navigation.navigate("Settings")}>
+              Settings
+            </Button>
           </Card>
-        )}
-      />
-      <Button onPress={() => navigation.navigate("Settings")}>Settings</Button>
-      <Button onPress={() => onLogin(null)}>Disconnect</Button>
-    </View>
+          <Button onPress={() => onLogin(null)}>Disconnect</Button>
+        </Card.Actions>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
+  container: { flex: 1 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
-  card: {
-    margin: 5
-  },
-  inputs: {
-    margin: 10
-  }
+  card: { margin: 5 },
 });
