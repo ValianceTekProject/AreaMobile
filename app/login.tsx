@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ScrollView, Pressable, Alert } from "react-native";
 import {
   TextInput,
@@ -16,8 +16,6 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
-
-  const baseUrl = "http://10.134.199.106:8080";
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -56,33 +54,20 @@ export default function LoginScreen() {
 
     try {
       const response = await apiClient.post(
-        '/auth/register',
-        JSON.stringify({ email, password })
+        "/auth/register",
+        JSON.stringify({ email, password }),
       );
 
-      // Sauvegarde le token
       await apiClient.setToken(response.token);
 
-      Alert.alert('Success', 'Account created and logged in!');
-      router.replace('/(tabs)');
+      Alert.alert("Success", "Account created and logged in!");
+      router.back();
     } catch (error) {
-      console.error('Register error:', error);
-      Alert.alert('Error', 'Registration failed');
+      console.error("Register error:", error);
+      Alert.alert("Error", "Registration failed");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleOAuthGoogle = () => {
-    const googleAuthUrl = `${baseUrl}/auth/google/login`;
-    console.log("Opening Google OAuth:", googleAuthUrl);
-    Alert.alert("Info", "Google OAuth to be implemented");
-  };
-
-  const handleOAuthGithub = () => {
-    const githubAuthUrl = `${baseUrl}/auth/github/login`;
-    console.log("Opening GitHub OAuth:", githubAuthUrl);
-    Alert.alert("Info", "GitHub OAuth to be implemented");
   };
 
   return (
@@ -153,31 +138,6 @@ export default function LoginScreen() {
               : "Don't have an account? Register"}
           </Button>
 
-          <View style={styles.dividerContainer}>
-            <Divider style={styles.divider} />
-            <Text style={styles.dividerText}>OR</Text>
-            <Divider style={styles.divider} />
-          </View>
-
-          <Button
-            mode="outlined"
-            onPress={handleOAuthGoogle}
-            style={styles.oauthButton}
-            icon="google"
-            disabled={loading}
-          >
-            Continue with Google
-          </Button>
-
-          <Button
-            mode="outlined"
-            onPress={handleOAuthGithub}
-            style={styles.oauthButton}
-            icon="github"
-            disabled={loading}
-          >
-            Continue with GitHub
-          </Button>
         </ScrollView>
       </View>
     </View>
