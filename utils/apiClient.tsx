@@ -1,75 +1,88 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
-const TOKEN_KEY = 'userToken';
+const TOKEN_KEY = "userToken";
 
 const API_BASE_URL = __DEV__
-  ? 'http://192.168.1.41:8080'
-  : process.env.EXPO_PUBLIC_API_URL || 'https://your-api.com';
+  ? "http://10.134.199.106:8080"
+  : process.env.EXPO_PUBLIC_API_URL || "https://your-api.com";
 
 export const apiClient = {
   get: async (endpoint: string) => {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
-        Authorization: token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : "",
+        "Content-Type": "application/json",
       },
     });
-    if (!response.ok) throw new Error('Request error');
+    if (!response.ok) throw new Error("Request error");
     return response.json();
   },
 
   put: async (endpoint: string, data: string) => {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        Authorization: token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : "",
+        "Content-Type": "application/json",
       },
       body: data,
     });
-    if (!response.ok) throw new Error('Request error');
+    if (!response.ok) throw new Error("Request error");
     return response.json();
   },
 
   post: async (endpoint: string, data: string) => {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        Authorization: token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : "",
+        "Content-Type": "application/json",
       },
       body: data,
     });
-    if (!response.ok) throw new Error('Request error');
-    return response.json();
+
+    if (!response.ok) throw new Error("Request error");
+
+    const text = await response.text();
+
+    if (!text || text.trim() === "") {
+      return { success: true };
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.warn("Response is not valid JSON:", text);
+      return { success: true };
+    }
   },
 
   delete: async (endpoint: string) => {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        Authorization: token ? `Bearer ${token}` : '',
+        Authorization: token ? `Bearer ${token}` : "",
       },
     });
-    if (!response.ok) throw new Error('Delete request error');
+    if (!response.ok) throw new Error("Delete request error");
     return response.status === 204 ? null : response;
   },
 
   patch: async (endpoint: string, data: string) => {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        Authorization: token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : "",
+        "Content-Type": "application/json",
       },
       body: data,
     });
-    if (!response.ok) throw new Error('Request error');
+    if (!response.ok) throw new Error("Request error");
     return response.json();
   },
 
