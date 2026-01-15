@@ -2,9 +2,7 @@ import * as SecureStore from "expo-secure-store";
 
 const TOKEN_KEY = "userToken";
 
-const API_BASE_URL = __DEV__
-  ? "http://10.134.199.106:8080"
-  : process.env.EXPO_PUBLIC_API_URL || "https://your-api.com";
+const API_BASE_URL = "http://192.168.1.41:8080";
 
 export const apiClient = {
   get: async (endpoint: string) => {

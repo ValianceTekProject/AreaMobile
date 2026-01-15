@@ -37,3 +37,6 @@ yarn-error.*
 
 /ios
 /android
+
+build.sh
+app-release.apk
