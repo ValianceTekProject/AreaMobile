@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  RefreshControl,
-} from "react-native";
+import { StyleSheet, View, FlatList, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Text, Button, IconButton, Switch } from "react-native-paper";
 import { apiClient } from "@/utils/apiClient";
+import CreateAreaPage from "../createArea";
+import { router } from "expo-router";
 
 type Area = {
   id: number;
@@ -59,7 +56,7 @@ export default function DashboardPage({
           <IconButton
             icon="plus"
             size={20}
-            onPress={() => navigation.navigate("CreateArea")}
+            onPress={() => router.push("/createArea")}
           />
         </View>
 
