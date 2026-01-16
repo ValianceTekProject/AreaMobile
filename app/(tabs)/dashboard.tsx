@@ -54,12 +54,24 @@ export default function DashboardPage({
         }),
       );
     } catch (e) {
-      console.log("failed to update status", e);
+      console.log("Failed to update status", e);
       setAreas(
         areas.map((area) =>
           area.id === id ? { ...area, isEnabled: !isEnable } : area,
         ),
       );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteArea = async (id: number) => {
+    try {
+      setLoading(true);
+      await apiClient.delete(`/areas/${id}/delete`);
+      fetchAreas();
+    } catch (e) {
+      console.log("Failed to delete Area", e);
     } finally {
       setLoading(false);
     }
@@ -104,7 +116,7 @@ export default function DashboardPage({
                 <Text variant="titleLarge">AREA Name: {item.name}</Text>
               </Card.Content>
               <Card.Actions>
-                <Button>Apply</Button>
+                <Button onPress={() => deleteArea(item.id)}>Delete</Button>
               </Card.Actions>
             </Card>
           )}
