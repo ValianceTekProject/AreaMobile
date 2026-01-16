@@ -56,6 +56,11 @@ export default function CreateAreaModal() {
     null,
   );
 
+  const [actionServiceExpanded, setActionServiceExpanded] = useState(false);
+  const [actionExpanded, setActionExpanded] = useState(false);
+  const [reactionServiceExpanded, setReactionServiceExpanded] = useState(false);
+  const [reactionExpanded, setReactionExpanded] = useState(false);
+
   useEffect(() => {
     const getAbout = async () => {
       try {
@@ -171,6 +176,8 @@ export default function CreateAreaModal() {
               left={(props) => <List.Icon {...props} icon="folder" />}
               style={styles.accordion}
               titleStyle={styles.accordionTitle}
+              expanded={actionServiceExpanded}
+              onPress={() => setActionServiceExpanded(!actionServiceExpanded)}
             >
               {about?.services.map((srv) => (
                 <List.Item
@@ -179,6 +186,8 @@ export default function CreateAreaModal() {
                   onPress={() => {
                     setSelectedActionService(srv);
                     setSelectedAction(null);
+                    setActionServiceExpanded(false);
+                    setActionExpanded(true);
                   }}
                   style={styles.item}
                 />
@@ -197,13 +206,18 @@ export default function CreateAreaModal() {
                 )}
                 style={styles.accordion}
                 titleStyle={styles.accordionTitle}
+                expanded={actionExpanded}
+                onPress={() => setActionExpanded(!actionExpanded)}
               >
                 {selectedActionService.actions.map((act) => (
                   <List.Item
                     key={act.name}
                     title={act.name}
                     description={act.description}
-                    onPress={() => setSelectedAction(act)}
+                    onPress={() => {
+                      setSelectedAction(act);
+                      setActionExpanded(false);
+                    }}
                     style={styles.item}
                   />
                 ))}
@@ -221,6 +235,10 @@ export default function CreateAreaModal() {
               left={(props) => <List.Icon {...props} icon="folder" />}
               style={styles.accordion}
               titleStyle={styles.accordionTitle}
+              expanded={reactionServiceExpanded}
+              onPress={() =>
+                setReactionServiceExpanded(!reactionServiceExpanded)
+              }
             >
               {about?.services
                 .filter((srv) => srv.reactions && srv.reactions.length)
@@ -231,6 +249,8 @@ export default function CreateAreaModal() {
                     onPress={() => {
                       setSelectedReactionService(srv);
                       setSelectedReaction(null);
+                      setReactionServiceExpanded(false);
+                      setReactionExpanded(true);
                     }}
                     style={styles.item}
                   />
@@ -247,13 +267,18 @@ export default function CreateAreaModal() {
                 left={(props) => <List.Icon {...props} icon="flash" />}
                 style={styles.accordion}
                 titleStyle={styles.accordionTitle}
+                expanded={reactionExpanded}
+                onPress={() => setReactionExpanded(!reactionExpanded)}
               >
                 {selectedReactionService.reactions.map((rea) => (
                   <List.Item
                     key={rea.name}
                     title={rea.name}
                     description={rea.description}
-                    onPress={() => setSelectedReaction(rea)}
+                    onPress={() => {
+                      setSelectedReaction(rea);
+                      setReactionExpanded(false);
+                    }}
                     style={styles.item}
                   />
                 ))}
