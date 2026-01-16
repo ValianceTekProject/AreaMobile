@@ -10,12 +10,15 @@ import {
 } from "react-native-paper";
 import { router } from "expo-router";
 import { apiClient } from "@/utils/apiClient";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
+
+  const { signIn } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -32,10 +35,10 @@ export default function LoginScreen() {
       );
 
       await apiClient.setToken(response.token);
-      console.log("Login successful:", response.token);
+
+      await signIn(response.token, { email });
 
       Alert.alert("Success", "Login successful!");
-      router.replace("/(tabs)/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       Alert.alert("Error", "Invalid credentials");
@@ -60,8 +63,9 @@ export default function LoginScreen() {
 
       await apiClient.setToken(response.token);
 
+      await signIn(response.token, { email });
+
       Alert.alert("Success", "Account created and logged in!");
-      router.back();
     } catch (error) {
       console.error("Register error:", error);
       Alert.alert("Error", "Registration failed");
@@ -137,7 +141,6 @@ export default function LoginScreen() {
               ? "Already have an account? Sign In"
               : "Don't have an account? Register"}
           </Button>
-
         </ScrollView>
       </View>
     </View>

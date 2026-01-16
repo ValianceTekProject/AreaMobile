@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Text, Button, IconButton, Switch } from "react-native-paper";
 import { apiClient } from "@/utils/apiClient";
 import { router } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
 
 type Area = {
   id: number;
@@ -11,20 +12,11 @@ type Area = {
   isEnabled: boolean;
 };
 
-type DashboardArgs = {
-  navigation: any;
-  user: any | null;
-  onLogin: (user: any | null) => void;
-};
-
-export default function DashboardPage({
-  navigation,
-  user,
-  onLogin,
-}: DashboardArgs) {
+export default function DashboardPage() {
   const [areas, setAreas] = useState<Area[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const { signOut } = useAuth();
 
   const fetchAreas = async () => {
     try {
@@ -87,6 +79,15 @@ export default function DashboardPage({
     fetchAreas();
   }, []);
 
+  const handleDisconnect = async () => {
+    try {
+      setAreas([]);
+      await signOut();
+    } catch (e) {
+      console.error("Failed to disconnect", e);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
@@ -123,12 +124,7 @@ export default function DashboardPage({
         />
 
         <Card.Actions>
-          <Card>
-            <Button onPress={() => navigation.navigate("Settings")}>
-              Settings
-            </Button>
-          </Card>
-          <Button onPress={() => onLogin(null)}>Disconnect</Button>
+          <Button onPress={() => handleDisconnect()}>Disconnect</Button>
         </Card.Actions>
       </View>
     </SafeAreaView>
