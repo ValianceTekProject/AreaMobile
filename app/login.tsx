@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, ScrollView, Pressable, Alert } from "react-native";
 import {
   TextInput,
   Button,
-  Divider,
   Text,
   IconButton,
   ActivityIndicator,
