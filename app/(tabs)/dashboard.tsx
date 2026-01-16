@@ -38,7 +38,7 @@ export default function DashboardPage({
     }
   };
 
-  const handleToogleArea = async (id: number, isEnable: boolean) => {
+  const handleToggleArea = async (id: number, isEnable: boolean) => {
     setAreas(
       areas.map((area) =>
         area.id === id ? { ...area, isEnabled: !isEnable } : area,
@@ -110,7 +110,7 @@ export default function DashboardPage({
                 <Switch
                   value={item.isEnabled}
                   onValueChange={(value) =>
-                    handleToogleArea(item.id, item.isEnabled)
+                    handleToggleArea(item.id, item.isEnabled)
                   }
                 />
                 <Text variant="titleLarge">AREA Name: {item.name}</Text>
