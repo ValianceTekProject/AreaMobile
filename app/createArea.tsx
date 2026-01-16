@@ -31,20 +31,10 @@ type About = {
   services: service[];
 };
 
-type Area = {
-  id: string;
-  name: string;
-  isEnabled: boolean;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-};
-
 export default function CreateAreaModal() {
   const [about, setAbout] = useState<About>();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [area, setArea] = useState<Area>();
 
   const [selectedActionService, setSelectedActionService] =
     useState<service | null>(null);
@@ -104,7 +94,6 @@ export default function CreateAreaModal() {
         }),
       );
       const createdArea = data.area;
-      setArea(data.area);
       await apiClient.post(
         `/areas/${createdArea.id}/action/add`,
         JSON.stringify({

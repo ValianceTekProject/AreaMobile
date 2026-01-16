@@ -1,4 +1,4 @@
-import { Stack, Tabs, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter} from "expo-router";
 import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "@/context/AuthContext";
@@ -29,6 +29,7 @@ export default function TabLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="home" />
       <Stack.Screen name="dashboard" />
+      <Stack.Screen name="admin" />
     </Stack>
   );
 }
