@@ -78,10 +78,6 @@ export default function CreateAreaModal() {
     getAbout();
   }, []);
 
-  useEffect(() => {
-    console.log("area = ", area?.id);
-  }, [area]);
-
   const handleCreateArea = async () => {
     if (!name.trim()) {
       Alert.alert("Error", "Please enter an area name");
