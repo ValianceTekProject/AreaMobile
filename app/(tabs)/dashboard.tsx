@@ -3,7 +3,6 @@ import { StyleSheet, View, FlatList, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Text, Button, IconButton, Switch } from "react-native-paper";
 import { apiClient } from "@/utils/apiClient";
-import CreateAreaPage from "../createArea";
 import { router } from "expo-router";
 
 type Area = {
@@ -39,6 +38,33 @@ export default function DashboardPage({
     }
   };
 
+  const handleToogleArea = async (id: number, isEnable: boolean) => {
+    setAreas(
+      areas.map((area) =>
+        area.id === id ? { ...area, isEnabled: !isEnable } : area,
+      ),
+    );
+
+    try {
+      setLoading(true);
+      await apiClient.patch(
+        `/areas/${id}/status`,
+        JSON.stringify({
+          is_enabled: !isEnable,
+        }),
+      );
+    } catch (e) {
+      console.log("failed to update status", e);
+      setAreas(
+        areas.map((area) =>
+          area.id === id ? { ...area, isEnabled: !isEnable } : area,
+        ),
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchAreas();
@@ -69,7 +95,12 @@ export default function DashboardPage({
           renderItem={({ item }) => (
             <Card style={styles.card}>
               <Card.Content>
-                <Switch value={item.isEnabled} />
+                <Switch
+                  value={item.isEnabled}
+                  onValueChange={(value) =>
+                    handleToogleArea(item.id, item.isEnabled)
+                  }
+                />
                 <Text variant="titleLarge">AREA Name: {item.name}</Text>
               </Card.Content>
               <Card.Actions>
