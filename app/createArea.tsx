@@ -100,7 +100,6 @@ export default function CreateAreaModal() {
         "/areas/create",
         JSON.stringify({
           name: name.trim(),
-          isEnabled: true,
         }),
       );
       const createdArea = data.area;
