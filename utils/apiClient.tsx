@@ -2,10 +2,22 @@ import * as SecureStore from "expo-secure-store";
 
 const TOKEN_KEY = "userToken";
 
-const API_BASE_URL = "http://192.168.1.41:8080";
+const SERVER_URL_KEY = "serverUrl";
+const DEFAULT_API_URL = "http://192.168.1.41:8080";
+
+const getBaseUrl = async (): Promise<string> => {
+  try {
+    const url = await SecureStore.getItemAsync(SERVER_URL_KEY);
+    return url || DEFAULT_API_URL;
+  } catch (e) {
+    console.error("Failed to load server URL", e);
+    return DEFAULT_API_URL;
+  }
+};
 
 export const apiClient = {
   get: async (endpoint: string) => {
+    const API_BASE_URL = await getBaseUrl();
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
@@ -18,6 +30,7 @@ export const apiClient = {
   },
 
   put: async (endpoint: string, data: string) => {
+    const API_BASE_URL = await getBaseUrl();
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: "PUT",
@@ -32,6 +45,7 @@ export const apiClient = {
   },
 
   post: async (endpoint: string, data: string) => {
+    const API_BASE_URL = await getBaseUrl();
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: "POST",
@@ -59,6 +73,7 @@ export const apiClient = {
   },
 
   delete: async (endpoint: string) => {
+    const API_BASE_URL = await getBaseUrl();
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: "DELETE",
@@ -71,6 +86,7 @@ export const apiClient = {
   },
 
   patch: async (endpoint: string, data: string) => {
+    const API_BASE_URL = await getBaseUrl();
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: "PATCH",
