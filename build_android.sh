@@ -37,7 +37,7 @@ if ! grep -q "android:usesCleartextTraffic" "$MANIFEST_FILE"; then
     sed -i 's/<application/<application\n        android:usesCleartextTraffic="true"/' "$MANIFEST_FILE"
 fi
 
-echo "sdk.dir=${ANDROID_HOME:-/root/Android/Sdk}" > "$ANDROID_DIR/local.properties"
+echo "sdk.dir=${ANDROID_SDK_ROOT}':-/root/Android/Sdk}" > "$ANDROID_DIR/local.properties"
 
 echo -e "Build APK Release..."
 cd "$ANDROID_DIR"

@@ -12,4 +12,4 @@ COPY . .
 COPY build_android.sh /app/build_android.sh
 RUN chmod +x /app/build_android.sh
 
-CMD ["bash", "-c", "./build_android.sh && cp /app/android/app/build/outputs/apk/release/app-release.apk /app/output/ && echo 'APK available in ./mobile/output/app-release.apk'"]
+CMD ["bash", "-c", "./build_android.sh && cp /app/android/app/build/outputs/apk/release/app-release.apk /output/ && echo 'APK available in ./mobile/output/app-release.apk'"]
