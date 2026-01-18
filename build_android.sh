@@ -11,6 +11,8 @@ echo -e "API IP : $API_IP"
 
 cd "$PROJECT_DIR"
 
+npx expo prebuild --platform android --clean
+
 mkdir -p "$ANDROID_DIR/app/src/main/res/xml"
 
 cat > "$ANDROID_DIR/app/src/main/res/xml/network_security_config.xml" << EOF
